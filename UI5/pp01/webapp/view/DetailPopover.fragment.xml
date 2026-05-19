@@ -1,0 +1,228 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog
+        title="{view>/selectedGroup/date} · {view>/selectedGroup/arbpl} {view>/selectedGroup/ktext}"
+        contentWidth="1000px"
+        contentHeight="600px"
+        resizable="true"
+        draggable="true"
+    >
+        <content>
+            <!-- KPI 요약 -->
+            <Panel
+                expandable="false"
+                backgroundDesign="Transparent"
+                class="sapUiSmallMargin"
+                width="97%"
+            >
+                <content>
+                    <HBox
+                        justifyContent="SpaceAround"
+                        alignItems="Center"
+                    >
+                        <items>
+                            <VBox alignItems="Center">
+                                <ObjectNumber
+                                    number="{view>/selectedGroup/count}"
+                                    emphasized="true"
+                                />
+                                <Text
+                                    text="총 공정"
+                                    class="sapUiTinyText"
+                                />
+                            </VBox>
+                            <VBox
+                                alignItems="Center"
+                                class="sapUiSmallMargin"
+                            >
+                                <ObjectNumber
+                                    number="{view>/selectedGroup/schdCount}"
+                                    state="None"
+                                    emphasized="true"
+                                />
+                                <Text
+                                    text="계획"
+                                    class="sapUiTinyText"
+                                />
+                            </VBox>
+
+                            <VBox
+                                alignItems="Center"
+                                class="sapUiSmallMargin"
+                            >
+                                <ObjectNumber
+                                    number="{view>/selectedGroup/runCount}"
+                                    state="Warning"
+                                    emphasized="true"
+                                />
+                                <Text
+                                    text="진행중"
+                                    class="sapUiTinyText"
+                                />
+                            </VBox>
+
+                            <VBox
+                                alignItems="Center"
+                                class="sapUiSmallMargin"
+                            >
+                                <ObjectNumber
+                                    number="{view>/selectedGroup/doneCount}"
+                                    state="Success"
+                                    emphasized="true"
+                                />
+                                <Text
+                                    text="완료"
+                                    class="sapUiTinyText"
+                                />
+                            </VBox>
+
+                            <VBox
+                                alignItems="Center"
+                                class="sapUiSmallMargin"
+                            >
+                                <ObjectNumber
+                                    number="{view>/selectedGroup/progressPct}"
+                                    unit="%"
+                                    state="Information"
+                                    emphasized="true"
+                                />
+                                <Text
+                                    text="진행률"
+                                    class="sapUiTinyText"
+                                />
+                            </VBox>
+                        </items>
+                    </HBox>
+                </content>
+            </Panel>
+
+            <!-- 공정 상세 테이블 -->
+            <Table
+                items="{view>/selectedGroup/operations}"
+                growing="false"
+                growingThreshold="20"
+                fixedLayout="true"
+                width="100%"
+            >
+                <columns>
+                    <Column
+                        width="70px"
+                        hAlign="Center"
+                    >
+                        <Text text="오더번호" />
+                    </Column>
+                    <Column
+                        width="40px"
+                        hAlign="Center"
+                    >
+                        <Text text="공정" />
+                    </Column>
+                    <Column
+                        width="40px"
+                        hAlign="Center"
+                    >
+                        <Text text="유형" />
+                    </Column>
+                    <Column
+                        width="200px"
+                        hAlign="Begin"
+                    >
+                        <HBox
+                            width="100%"
+                            justifyContent="Center"
+                        >
+                            <Text text="자재" />
+                        </HBox>
+                    </Column>
+
+                    <Column
+                        width="80px"
+                        hAlign="Begin"
+                    >
+                        <Text text="수량" />
+                    </Column>
+                    <Column width="100px">
+                        <Text text="진행률" />
+                    </Column>
+                    <Column
+                        width="70px"
+                        hAlign="Center"
+                    >
+                        <Text text="상태" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text
+                                text="{view>Aufnr}"
+                                wrapping="false"
+                            />
+                            <Text
+                                text="{view>Vornr}"
+                                wrapping="false"
+                            />
+                            <ObjectStatus
+                                text="{= ${view>Autyp} === 'MS' ? '생산'
+                          : ${view>Autyp} === 'UR' ? '긴급'
+                          : ${view>Autyp} === 'RP' ? '수리'
+                          : ${view>Autyp} === 'PL' ? '계획'
+                          : '기타' }"
+                                state="{= ${view>Autyp} === 'UR' ? 'Error'
+                            : ${view>Autyp} === 'RP' ? 'Warning'
+                            : ${view>Autyp} === 'MS' ? 'Success'
+                            : 'Information' }"
+                                inverted="true"
+                            />
+                            <VBox width="100%">
+                                <Text
+                                    text="{view>Matnr}"
+                                    wrapping="false"
+                                />
+                                <Text
+                                    text="{view>Maktx}"
+                                    class="sapUiTinyText"
+                                    maxLines="2"
+                                    wrapping="true"
+                                    tooltip="{view>Maktx}"
+                                />
+                            </VBox>
+
+                            <Text
+                                text="{view>Done_qty} / {view>Plan_qty} {view>Gmein}"
+                                wrapping="false"
+                            />
+                            <ProgressIndicator
+                                percentValue="{= parseFloat(${view>Progress_pct}) || 0 }"
+                                displayValue="{= (parseFloat(${view>Progress_pct}) || 0).toFixed(0) + '%' }"
+                                state="{= ${view>Statu} === 'DONE' ? 'Success'
+                            : ${view>Statu} === 'RUN'  ? 'Warning'
+                            : 'None' }"
+                                showValue="true"
+                                height="18px"
+                            />
+                            <ObjectStatus
+                                text="{view>Statu}"
+                                state="{= ${view>Statu} === 'DONE' ? 'Success'
+                            : ${view>Statu} === 'RUN'  ? 'Warning'
+                            : 'None' }"
+                                inverted="true"
+                            />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+
+        <endButton>
+            <Button
+                text="닫기"
+                type="Emphasized"
+                press="onCloseDetailPopover"
+            />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

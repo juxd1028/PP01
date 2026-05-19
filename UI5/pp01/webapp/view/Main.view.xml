@@ -1,0 +1,161 @@
+<mvc:View
+    controllerName="code.t4.ui5.pp01.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:unified="sap.ui.unified"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+>
+    <Page
+        id="page"
+        title="{i18n>title}"
+    >
+        <content>
+            <HBox
+                items="{view>/workCenterStats}"
+                wrap="Wrap"
+                justifyContent="Center"
+                class="sapUiSmallMargin"
+            >
+                <items>
+                    <GenericTile
+                        header="{view>arbpl}"
+                        subheader="{view>ktext}"
+                        frameType="OneByOne"
+                        class="sapUiMediumMarginEnd sapUiMediumMarginBottom bigTile"
+                    >
+                        <tileContent>
+                            <TileContent
+                                footer="계획 {view>schd} · 진행 {view>run}"
+                            >
+                                <content>
+                                    <VBox>
+                                        <NumericContent
+                                            value="{view>run}"
+                                            scale="/ {view>capac}"
+                                            indicator="None"
+                                            valueColor="..."
+                                            truncateValueTo="3"
+                                        />
+
+                                        <ProgressIndicator
+                                            percentValue="{view>donePct}"
+                                            displayValue="{view>donePct}%"
+                                            showValue="false"
+                                            state="{= ${view>donePct} === 100 ? 'Success'
+                                                    : ${view>donePct} >= 50    ? 'Warning'
+                                                    : ${view>donePct} > 0      ? 'Information'
+                                                    : 'None' }"
+                                            height="8px"
+                                            class="sapUiTinyMarginTop"
+                                        />
+                                    </VBox>
+                                </content>
+                            </TileContent>
+                        </tileContent>
+                    </GenericTile>
+                </items>
+            </HBox>
+
+            <!-- 작업장별 공정 일정 (캘린더) -->
+            <Panel
+                id="calendarPanel"
+                headerText="작업장별 공정 일정"
+                expandable="false"
+                class="sapUiResponsiveMargin"
+                width="auto"
+            >
+                <content>
+                    <!-- 필터 바 -->
+                    <Toolbar
+                        id="filterToolbar"
+                        class="sapUiSmallMarginBottom"
+                    >
+                        <Label
+                            text="작업장:"
+                            labelFor="arbplSelect"
+                        />
+                        <Select
+                            id="arbplSelect"
+                            selectedKey="{view>/selectedArbpl}"
+                            change="onFilterChange"
+                            items="{view>/workCenterList}"
+                        >
+                            <core:Item
+                                key="{view>arbpl}"
+                                text="{view>arbpl} - {view>ktext}"
+                            />
+                        </Select>
+
+                        <ToolbarSpacer />
+
+                        <Label text="상태:" />
+                        <Select
+                            id="statuSelect"
+                            selectedKey="{view>/selectedStatu}"
+                            change="onFilterChange"
+                        >
+                            <core:Item
+                                key="ALL"
+                                text="전체"
+                            />
+                            <core:Item
+                                key="SCHD"
+                                text="계획"
+                            />
+                            <core:Item
+                                key="RUN"
+                                text="진행중"
+                            />
+                            <core:Item
+                                key="DONE"
+                                text="완료"
+                            />
+                        </Select>
+                    </Toolbar>
+
+                    <!-- 월간 캘린더 -->
+                    <SinglePlanningCalendar
+                        id="opCalendar"
+                        startDate="{view>/startDate}"
+                        selectedView="MonthView"
+                        appointments="{view>/filteredOperations}"
+                        appointmentSelect="onAppointmentPress"
+                    >
+                        <views>
+                            <SinglePlanningCalendarMonthView
+                                key="MonthView"
+                                title="Month"
+                            />
+                        </views>
+
+                        <appointments>
+                            <unified:CalendarAppointment
+                                title="{view>title}"
+                                text="{view>text}"
+                                tooltip="{view>tooltip}"
+                                startDate="{view>startDate}"
+                                endDate="{view>endDate}"
+                                type="{view>type}"
+                            />
+                        </appointments>
+                    </SinglePlanningCalendar>
+                </content>
+            </Panel>
+
+            <!-- 차트 (다음 단계) -->
+            <Panel
+                id="chartPanel"
+                headerText="월별 진행 현황"
+                expandable="false"
+                class="sapUiResponsiveMargin"
+                width="auto"
+            >
+                <content>
+                    <Text text="여기에는 차트가 들어갈 예정" />
+                </content>
+            </Panel>
+        </content>
+    </Page>
+</mvc:View>

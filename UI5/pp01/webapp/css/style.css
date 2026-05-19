@@ -1,0 +1,15 @@
+.bigTile,
+.bigTile .sapMGTHdrContent,
+.bigTile .sapMGTHdrContent {
+  height: auto !important;
+}
+
+/* footer 글자 잘림 방지 */
+.bigTile .sapMTileCntFtrTxt {
+  height: auto !important;
+  line-height: 1.5 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  padding: 0.25rem 0 !important;
+}
